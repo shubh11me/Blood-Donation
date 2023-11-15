@@ -1,0 +1,13 @@
+﻿
+<button id="executeButton" onclick="ughad()">Call</button>
+
+    <script>
+        function ughad() {
+            $.ajax({
+                url: "runnnn",
+                method: "GET"
+            }).then((r) => {
+                console.log(r)
+            })
+        }
+    </script>

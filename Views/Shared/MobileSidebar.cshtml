@@ -1,0 +1,32 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<nav class="navbar-mobile">
+    <div class="container-fluid">
+        <ul class="navbar-mobile__list list-unstyled">
+
+            <li class="@isActive((string)@ViewData["current"],"ghar")">
+                <a href="blood_list.php">
+                    <i class="fas fa-chart-bar"></i>Request A Blood
+                </a>
+            </li>
+            <li class="@isActive((string)@ViewData["current"],"reqs")">
+                <a href="my_requests.php">
+                    <i class="far fa-clock"></i>My Requests
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+@{
+    string isActive(string linkFor, string current)
+    {
+        if (linkFor == current)
+        {
+            return "active";
+        }
+        return "";
+    }
+}
