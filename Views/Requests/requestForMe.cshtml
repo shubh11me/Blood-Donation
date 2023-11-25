@@ -1,0 +1,98 @@
+﻿
+@{
+                ViewData["current"] = "reqs";
+                @using Blood_Donation.Identity;
+                @inject SignInManager<ApplicationUser> signm;
+                @inject UserManager<ApplicationUser> userManager;
+    Task<ApplicationUser> GetUserid(string id) => userManager.FindByIdAsync(id);
+
+            }
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header card_header_add">
+            <strong>My Requests</strong>
+            <small>for Shubham</small>
+        </div>
+        <div class="table-responsive table-responsive-data2">
+
+            <table class="table table-data2">
+                <thead>
+                    <tr class="bg-danger table_stock_header">
+                        <th>Request By</th>
+                        <th>Blood Group</th>
+                        <th>Request Status</th>
+                        <th>Request Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @if (ViewBag.cnt > 0)
+                    {
+
+
+                    @foreach (var req in ViewBag.reqs as List
+                    <myRequests>
+                        )
+                        {
+                        <tr class="tr-shadow">
+                            <td>@GetUserid(@req.req_user).Result.fullname</td>
+                            <td>@req.req_blood_group</td>
+                            <td>
+
+                                <select asp-items="getOpts(@req.req_status)" name="req_status" id="select_@req.req_id" onchange="update_req_status(this,@req.req_id,'@req.req_status')" class="form-control">
+                                </select>
+                            </td>
+                            <td>@req.req_date</td>
+                        </tr>
+                        <tr class="spacer"></tr>
+                        }
+                        }else{
+
+                        <div class="alert alert-danger" role="alert">Sorry ! No Requests Found </div>
+                        }
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@{
+List<SelectListItem>
+    getOpts(string val)
+    {
+    return new List<SelectListItem>
+        ()
+        {
+        new SelectListItem(){Text="Accepted",Value="accepted",Selected=(val=="accepted")},
+        new SelectListItem(){Text="Rejected",Value="rejected",Selected=(val=="rejected")},
+        new SelectListItem(){Text="Pending",Value="pending",Selected=(val=="pending")},
+        };
+        }
+
+        }
+   
+    <script>
+        function update_req_status(val, req_id,old) {
+            var i = confirm("Do you really want to change");
+            if (i && req_id && val.value) {
+                $.ajax({
+                    url: "/requests/updRequestBlood?req_id=" + req_id + "&newVal=" + val.value,
+                    method: "GET",
+                    success: function (r) {
+                        alert(r.message);
+                        window.location.reload();
+                    },
+                    error: function (e) {
+                        if (e?.responseJSON?.message) {
+                            alert(e?.responseJSON?.message);
+
+                        }
+                    }
+                })
+            } else {
+                document.getElementById("select_" + req_id).value = old;
+            }
+         
+        }
+    </script>

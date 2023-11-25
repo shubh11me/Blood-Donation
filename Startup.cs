@@ -34,21 +34,23 @@ namespace Blood_Donation
             .AddDefaultTokenProviders();
             services.ConfigureApplicationCookie(s =>
             {
-                if (s.ClaimsIssuer == "user")
-                {
-                    s.LoginPath = "/user/signin";
-                    s.AccessDeniedPath = "/user/signin";
-                }
-                else if(s.ClaimsIssuer == "hospital")
-                {
-                    s.LoginPath = "/hospital/signup";
-                    s.AccessDeniedPath = "/hospital/signup";
-                }
-                else
-                {
-                    s.LoginPath = "/user/signin";
+                //if (s.ClaimsIssuer == "user")
+                //{
+                //    s.LoginPath = "/user/signin";
+                //}
+                //else if(s.ClaimsIssuer == "hospital")
+                //{
+                //    s.LoginPath = "/hospital/signup";
+                //}
+                //else
+                //{
+                //    s.LoginPath = "/user/signin";
 
-                }
+                //}
+                s.LoginPath = "/user/signin";
+
+                s.AccessDeniedPath = "/accessDeniaed";
+
             }
                 );
 

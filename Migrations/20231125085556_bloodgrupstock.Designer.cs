@@ -4,14 +4,16 @@ using Blood_Donation.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Blood_Donation.Migrations
 {
     [DbContext(typeof(BloodContext))]
-    partial class BloodContextModelSnapshot : ModelSnapshot
+    [Migration("20231125085556_bloodgrupstock")]
+    partial class bloodgrupstock
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,37 +120,6 @@ namespace Blood_Donation.Migrations
                             id = 7,
                             blood_group_name = "AB"
                         });
-                });
-
-            modelBuilder.Entity("Blood_Donation.Models.BloodRequests", b =>
-                {
-                    b.Property<int>("requestId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("bloodId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("byUser")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("forHospital")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("req_status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("req_time")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("requestId");
-
-                    b.HasIndex("bloodId");
-
-                    b.ToTable("BloodRequests");
                 });
 
             modelBuilder.Entity("Blood_Donation.Models.Users", b =>
@@ -359,17 +330,6 @@ namespace Blood_Donation.Migrations
                         .IsRequired();
 
                     b.Navigation("bloodGroups");
-                });
-
-            modelBuilder.Entity("Blood_Donation.Models.BloodRequests", b =>
-                {
-                    b.HasOne("Blood_Donation.Models.BloodGroups", "bloodgroup")
-                        .WithMany()
-                        .HasForeignKey("bloodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("bloodgroup");
                 });
 #pragma warning restore 612, 618
         }

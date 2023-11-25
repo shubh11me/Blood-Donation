@@ -2,6 +2,8 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewData["current"] = "ghar";
+
 }
 <div class="col-lg-12">
     <div class="card">
@@ -9,27 +11,25 @@
             <strong>Add Blood to Blood Bank</strong>
             <small> Form</small>
         </div>
-        <form action="" method="post">
+        <form method="post">
             <div class="card-body card-block">
 
                 <div class="row form-group">
                     <div class="col-6">
                         <div class="form-group">
                             <label for="select" class=" form-control-label">Please Select Bloog Group</label>
-                            <select asp-items="ViewBag.bloods" name="blood_group" id="select" class="form-control">
-                              
-
+                            <select asp-items="ViewBag.bloods" name="bloodStockBlood" id="select" class="form-control">
                             </select>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="form-group">
                             <label for="blood_group_stock_quantity" class=" form-control-label">Blood Group Quantity</label>
-                            <input type="number" id="blood_group_stock_quantity" name="blood_group_stock_quantity" placeholder="Quantity" class="form-control">
+                            <input type="number" id="blood_group_stock_quantity" name="bloodStockQuantity" placeholder="Quantity" class="form-control">
                         </div>
                     </div>
                 </div>
-               <h4></h4>
+                <h4></h4>
 
 
             </div>
@@ -42,7 +42,23 @@
                 </button>
             </div>
         </form>
+        <div class="container">
+            @{
+                    var a = ViewBag.msg;
+                    if (a != null)
+                    {
+                        var clas = a.error == true ? "danger" : "success";
+                    <div class="alert alert-@clas" role="alert">
+                        <span class="alert-link">
+                            @a.msg
+                        </span>
+                    </div>
+                }
+            }
+            
+        </div>
     </div>
+
     <!-- Form div end -->
 
     <div class="card">
@@ -63,21 +79,21 @@
                         </tr>
                     </thead>
                     <tbody>
-                      
+                        @foreach (var blo in ViewBag.bloodstocks)
+                        {
                         <tr class="tr-shadow">
-
-                            <td>asc</td>
-                            <td>5</td>
+                            <td>@blo.bloodGroupName</td>
+                            <td>@blo.bloodStockQuantity</td>
                             <td>
                                 <div class="data_table_icons">
 
-                                    <a href="#edit_blood_stock" data-toggle="modal" data-target="#edit_blood_stock">
+                                    <a href="#edit_blood_stock_@blo.id" data-toggle="modal" data-target="#edit_blood_stock_@blo.id">
                                         <button class="item" type="button" data-toggle="tooltip" data-placement="top" title="Edit">
                                             <i class="zmdi zmdi-edit"></i>
                                         </button>
                                     </a>
 
-                                    <div class="modal fade" id="edit_blood_stock84" tabindex="2" role="dialog" aria-hidden="false">
+                                    <div class="modal fade" style="top:unset !important" id="edit_blood_stock_@blo.id" tabindex="2" role="dialog" aria-hidden="false">
                                         <div class="modal-dialog modal-lg" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -86,20 +102,20 @@
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
-                                                <form  method="post">
+                                                <form method="post">
                                                     <div class="modal-body">
                                                         <h1>Update Blood Stock</h1><br>
 
                                                         <h4>Current Blood Stock</h4>
-                                                        <input type="number" disabled >
+                                                        <input type="number" disabled>
 
                                                         <h4>Update quantity of Blood Stock</h4><br>
-                                                        <p>Enter New Value Here</p> <input type="number" id="new_quanity2" style="background:#e5e5e5" placeholder="Enter New Value Here" name="new_quanity">
+                                                        <p>Enter New Value Here</p> <input type="number" id="new_quanity_@blo.id" style="background:#e5e5e5" placeholder="Enter New Value Here" name="new_quanity" value="@blo.bloodStockQuantity">
 
                                                     </div>
                                                     <div class="modal-footer bg-success">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                                        <button type="button"  name="updt_quan" class="btn btn-primary">Confirm</button>
+                                                        <button type="button" name="updt_quan" onclick="updateQUant(@blo.id)" class="btn btn-primary">Confirm</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -107,15 +123,16 @@
                                     </div>
 
 
-                                    <button class="item" id="blood_group_stock_delete"  data-toggle="tooltip" data-placement="top" title="Delete">
+                                    <button class="item" onclick="DeleteQUant(@blo.id)" id="blood_group_stock_delete" data-toggle="tooltip" data-placement="top" title="Delete">
                                         <i class="zmdi zmdi-delete"></i>
-                                    </button></a>
+                                    </button>
+
 
                                 </div>
                             </td>
                         </tr>
-                        <tr class="spacer"></tr>
-                      
+                            <tr class="spacer"></tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -123,3 +140,46 @@
         </div>
     </div>
 </div>
+
+<script>
+    function updateQUant(bloodStockId) {
+        var neqQuantity = document.getElementById(`new_quanity_${bloodStockId}`).value;
+        if (neqQuantity) {
+            neqQuantity = parseInt(neqQuantity);
+            $.ajax({
+                url: "/Hospital/UpdateBloodQuan?bloodStockId=" + bloodStockId + "&neqQuantity=" + neqQuantity,
+                method: "PUT",
+                success: function (r) {
+                    alert(r.message);
+                    $('#edit_blood_stock_' + bloodStockId).modal('hide');
+                    window.location.reload();
+                },
+                error: function (e) {
+                    if (e?.responseJSON?.message) {
+                        alert(e?.responseJSON?.message);
+
+                    }
+                }
+            })
+        }
+    }
+    function DeleteQUant(bloodStockId) {
+        var i = confirm("Do you really want to delete");
+        if (i) {
+            $.ajax({
+                url: "/Hospital/DeleteBloodQuan?bloodStockId=" + bloodStockId,
+                method: "DELETE",
+                success: function (r) {
+                    alert(r.message);
+                    window.location.reload();
+                },
+                error: function (e) {
+                    if (e?.responseJSON?.message) {
+                        alert(e?.responseJSON?.message);
+
+                    }
+                }
+            })
+        }
+    }
+</script>

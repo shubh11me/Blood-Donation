@@ -18,19 +18,14 @@ namespace Blood_Donation.Models
         }
         public DbSet<Users> Users { get; set; }
         public DbSet<BloodGroups> BloodGroups { get; set; }
+        public DbSet<BloodGroupStock> BloodGroupStocks { get; set; }
+        public DbSet<BloodRequests> BloodRequests { get; set; }
         //public DbSet<Blood_Donation.Models.UserViewModel> UserViewModel { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Ignore<IdentityUserLogin<string>>();
-            //builder.Ignore<IdentityUserRole<string>>();
 
-            //builder.Ignore<IdentityUserClaim<string>>();
-            //builder.Ignore<IdentityUserToken<string>>();
-            //builder.Ignore<IdentityUser<string>>();
-            //builder.Ignore<ApplicationUser>();
             builder.Entity<IdentityUserLogin<string>>().HasKey(s => s.UserId);
-            //builder.Entity<IdentityUserRole<string>>().HasKey(s => s.RoleId);
             builder.Entity<IdentityUserRole<string>>()
        .HasKey(e => new { e.UserId, e.RoleId });
             builder.Entity<IdentityUserClaim<string>>().HasKey(s => s.Id);

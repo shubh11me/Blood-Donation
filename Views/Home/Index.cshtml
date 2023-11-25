@@ -5,5 +5,121 @@
 
     }
 
-<h1>@ViewData["name"]</h1>
 
+<div class="col-lg-12">
+    <div class="card accodion_table">
+        <div class="card-header">
+            <strong>Blood Available</strong>
+            <small> by Blood Groups</small>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+              
+                    @foreach (var hosp in ViewData["hosps"] as List<hospitalNameID>) { 
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                          
+                            <div class="panel-heading" role="tab" id="headingOne_@hosp.hospitalId">
+                                <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse_@hosp.hospitalId" aria-expanded="true" aria-controls="collapseOne_@hosp.hospitalId">
+                                        @hosp.hospital
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="collapse_@hosp.hospitalId" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne_@hosp.hospitalId">
+                                <div class="panel-body">
+                                    <div class="table-responsive table-responsive-data2">
+                                  
+                                        <table class="table table-data2">
+                                            <thead>
+                                                <tr>
+                                                    <th>Hospital Name</th>
+                                                    <th>Hospital Email</th>
+                                                    <th>Blood Group</th>
+                                                    <th>Quantity</th>
+                                                    <th>Request Blood <i class="fas fa-tint" style="color:red;font-size:medium;text-align:center;"></i></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var stock in hosp.stocks)
+                                                {
+                                                    <tr class="tr-shadow">
+
+                                                        <td>@hosp.hospital</td>
+                                                        <td>@hosp.hospitalEmail</td>
+                                                        <td>@stock.bloodname</td>
+                                                        <td>@stock.bloodQuantity</td>
+                                                        <td>
+                                                            @if (stock.reqStatus == "rejected" || String.IsNullOrEmpty(stock.reqStatus))
+                                                            {
+                                                                <button class="btn btn-danger" onclick="request_blood('@hosp.hospitalId',@stock.bloodid,'@ViewData["userId"]')">
+                                                                    Request Blood
+                                                                    <i class="fas fa-tint" style="color:white;font-size:medium;text-align:center;"></i>
+                                                                </button>
+                                                            }
+                                                            else if (stock.reqStatus == "pending")
+                                                            {
+                                                                <h4>
+                                                                    <span class="badge badge-warning">Pending</span>
+                                                                </h4>
+                                                            }
+                                                            else if (stock.reqStatus == "accepted")
+                                                            {
+                                                                <h4>
+                                                                    <span class="badge badge-success">Accepted</span>
+                                                                    </h4>
+
+                                                                    }
+                                                            </td>
+                                                    </tr>
+                                                    <tr class="spacer"></tr>
+
+                                                }
+
+
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    }
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function request_blood(hosp, blood, user) {
+        let body = new FormData();
+        body.append("bloodId", blood);
+        body.append("forHospital", hosp);
+        body.append("byUser", user);
+        body.append("req_status", "pending");
+        $.ajax({
+            url: "/requests/requestBlood",
+            method: "POST",
+            data: body,
+            processData: false,
+            contentType: false,
+            cache: false,
+            enctype: 'multipart/form-data',
+           success: function (r) {
+                alert(r.message);
+                window.location.reload();
+            },
+            error: function (e) {
+                if (e?.responseJSON?.message) {
+                    alert(e?.responseJSON?.message);
+
+                }
+            }
+        });
+    }
+</script>

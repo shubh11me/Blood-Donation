@@ -4,14 +4,16 @@ using Blood_Donation.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Blood_Donation.Migrations
 {
     [DbContext(typeof(BloodContext))]
-    partial class BloodContextModelSnapshot : ModelSnapshot
+    [Migration("20231125144500_bloodRequest3")]
+    partial class bloodRequest3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,8 +140,8 @@ namespace Blood_Donation.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("req_status")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("req_status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("req_time")
                         .HasColumnType("datetime2");
