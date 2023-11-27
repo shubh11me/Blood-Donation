@@ -87,7 +87,7 @@ namespace Blood_Donation
             {
             endpoints.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=MainHome}/{action=Index}/{id?}");
             });
 
         }
